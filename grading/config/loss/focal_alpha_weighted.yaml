@@ -1,0 +1,67 @@
+experiment_name: retino_classification_focal_alpha_weighted
+seed: 42
+output_base_dir: outputs
+
+data:
+  train_images_dir: "../B. Disease Grading/1. Original Images/a. Training Set"
+  train_labels_csv: "../B. Disease Grading/2. Groundtruths/a. IDRiD_Disease Grading_Training Labels.csv"
+  test_images_dir: "../B. Disease Grading/1. Original Images/b. Testing Set"
+  test_labels_csv: "../B. Disease Grading/2. Groundtruths/b. IDRiD_Disease Grading_Testing Labels.csv"
+
+image_size: 1024
+
+model:
+  name: resnext50_32x4d
+  num_classes: 5
+  pretrained: true
+
+training:
+  num_epochs: 100
+  batch_size: 8
+  num_workers: 16
+  save_freq: 10
+
+optimizer:
+  name: adam
+  lr: 0.0001
+  weight_decay: 0.00001
+
+scheduler:
+  name: plateau
+  patience: 5
+  factor: 0.5
+
+loss:
+  name: focal
+  alpha: [0.1, 0.3, 0.5, 0.7, 1.0]
+  gamma: 2.0
+
+preprocessing:
+  clahe: false
+  center_crop: false
+
+augmentation:
+  horizontal_flip: 0.5
+  vertical_flip: 0.5
+  random_rotate90: 0.5
+  rotation_limit: 30
+  rotation_prob: 0.5
+  
+  brightness_contrast: 0.5
+  brightness_limit: 0.3
+  contrast_limit: 0.3
+  hue_saturation: 0.4
+  hue_shift_limit: 25
+  sat_shift_limit: 40
+  val_shift_limit: 25
+  
+  gaussian_blur: 0.2
+  motion_blur: 0.2
+  gaussian_noise: 0.3
+  elastic_transform: 0.3
+  grid_distortion: 0.2
+  optical_distortion: 0.2
+
+logging:
+  use_wandb: true
+  project_name: retino_grading_loss_experiments 

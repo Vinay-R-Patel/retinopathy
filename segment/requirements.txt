@@ -1,0 +1,11 @@
+torch>=2.0.0
+torchvision>=0.15.0
+segmentation-models-pytorch
+opencv-python
+numpy
+matplotlib
+tqdm
+albumentations
+Pillow
+PyYAML
+wandb 

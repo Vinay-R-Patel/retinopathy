@@ -1,0 +1,94 @@
+data:
+  segmentation:
+    train_images_dir: "../A. Segmentation/1. Original Images/a. Training Set"
+    train_hard_exudates_dir: "../A. Segmentation/2. All Segmentation Groundtruths/a. Training Set/3. Hard Exudates"
+    train_haemorrhages_dir: "../A. Segmentation/2. All Segmentation Groundtruths/a. Training Set/2. Haemorrhages"
+    test_images_dir: "../A. Segmentation/1. Original Images/b. Testing Set"
+    test_hard_exudates_dir: "../A. Segmentation/2. All Segmentation Groundtruths/b. Testing Set/3. Hard Exudates"
+    test_haemorrhages_dir: "../A. Segmentation/2. All Segmentation Groundtruths/b. Testing Set/2. Haemorrhages"
+  
+  classification:
+    train_images_dir: "../B. Disease Grading/1. Original Images/a. Training Set"
+    train_labels_csv: "../B. Disease Grading/2. Groundtruths/a. IDRiD_Disease Grading_Training Labels.csv"
+    test_images_dir: "../B. Disease Grading/1. Original Images/b. Testing Set"
+    test_labels_csv: "../B. Disease Grading/2. Groundtruths/b. IDRiD_Disease Grading_Testing Labels.csv"
+
+model:
+  backbone_name: "resnext50_32x4d"
+  seg_classes: 3
+  cls_classes: 5
+  n_experts: 8
+  decoder_channels: 256
+  encoder_weights: "imagenet"
+
+training:
+  batch_size: 2
+  num_epochs: 30
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  num_workers: 2
+  pin_memory: true
+  gradient_clip_val: 1.0
+
+preprocessing:
+  image_size: 512
+  advanced_fundus: true
+  fundus_scale: 300
+  clahe: false
+  clahe_clip_limit: 3.0
+  clahe_tile_size: 8
+  center_crop: false
+  crop_height: 512
+  crop_width: 512
+
+augmentations:
+  horizontal_flip_prob: 0.5
+  vertical_flip_prob: 0.5
+  rotate90_prob: 0.5
+  rotation_prob: 0.3
+  rotation_limit: 30
+  
+  brightness_contrast_prob: 0.3
+  brightness_limit: 0.2
+  contrast_limit: 0.2
+  hue_saturation_prob: 0.2
+  hue_shift_limit: 20
+  sat_shift_limit: 30
+  val_shift_limit: 20
+  color_jitter_prob: 0.2
+  
+  gaussian_blur_prob: 0.1
+  motion_blur_prob: 0.1
+  gaussian_noise_prob: 0.1
+  elastic_transform_prob: 0.05
+  grid_distortion_prob: 0.05
+  optical_distortion_prob: 0.05
+
+loss:
+  use_uncertainty: true
+  
+  seg_loss_name: "dice"
+  
+  cls_loss_name: "focal"
+  alpha: 0.25
+  gamma: 2.0
+
+optimizer:
+  type: "AdamW"
+  lr_scheduler:
+    type: "ReduceLROnPlateau"
+    mode: "max"
+    patience: 5
+    factor: 0.5
+    min_lr: 1e-7
+
+output:
+  save_dir: "outputs"
+  model_name: "best_resnext50_small_mixoe_model.pth"
+  plot_training_curves: true
+  visualize_predictions: true
+  num_visualization_samples: 2
+  save_detailed_report: true
+
+wandb:
+  enabled: false

@@ -1,0 +1,64 @@
+experiment_name: multiclass_segmentation_no_aug
+seed: 42
+output_base_dir: outputs
+
+data:
+  train_images_dir: "../A. Segmentation/1. Original Images/a. Training Set"
+  train_hard_exudates_dir: "../A. Segmentation/2. All Segmentation Groundtruths/a. Training Set/3. Hard Exudates"
+  train_haemorrhages_dir: "../A. Segmentation/2. All Segmentation Groundtruths/a. Training Set/2. Haemorrhages"
+  test_images_dir: "../A. Segmentation/1. Original Images/b. Testing Set"
+  test_hard_exudates_dir: "../A. Segmentation/2. All Segmentation Groundtruths/b. Testing Set/3. Hard Exudates"
+  test_haemorrhages_dir: "../A. Segmentation/2. All Segmentation Groundtruths/b. Testing Set/2. Haemorrhages"
+
+image_size: 512
+
+model:
+  name: resnet34
+  encoder_weights: imagenet
+  num_classes: 3
+
+training:
+  num_epochs: 100
+  batch_size: 8
+  num_workers: 16
+  save_freq: 10
+
+optimizer:
+  name: adam
+  lr: 0.0001
+  weight_decay: 0.00001
+
+scheduler:
+  name: plateau
+  patience: 5
+  factor: 0.5
+
+loss:
+  name: combined
+  alpha: 0.5
+
+augmentation:
+  horizontal_flip: 0.0
+  vertical_flip: 0.0
+  random_rotate90: 0.0
+  rotation_limit: 30
+  rotation_prob: 0.0
+  
+  brightness_contrast: 0.0
+  brightness_limit: 0.2
+  contrast_limit: 0.2
+  hue_saturation: 0.0
+  hue_shift_limit: 20
+  sat_shift_limit: 30
+  val_shift_limit: 20
+  
+  gaussian_blur: 0.0
+  motion_blur: 0.0
+  gaussian_noise: 0.0
+  elastic_transform: 0.0
+  grid_distortion: 0.0
+  optical_distortion: 0.0
+
+logging:
+  use_wandb: true
+  project_name: multiclass_segmentation_augmentation_test 

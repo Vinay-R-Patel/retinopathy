@@ -1,0 +1,93 @@
+experiment_name: multitask_multihead_final
+seed: 42
+output_base_dir: outputs
+
+segmentation_data:
+  train_images_dir: "../A. Segmentation/1. Original Images/a. Training Set"
+  train_hard_exudates_dir: "../A. Segmentation/2. All Segmentation Groundtruths/a. Training Set/3. Hard Exudates"
+  train_haemorrhages_dir: "../A. Segmentation/2. All Segmentation Groundtruths/a. Training Set/2. Haemorrhages"
+  test_images_dir: "../A. Segmentation/1. Original Images/b. Testing Set"
+  test_hard_exudates_dir: "../A. Segmentation/2. All Segmentation Groundtruths/b. Testing Set/3. Hard Exudates"
+  test_haemorrhages_dir: "../A. Segmentation/2. All Segmentation Groundtruths/b. Testing Set/2. Haemorrhages"
+
+classification_data:
+  train_images_dir: "../B. Disease Grading/1. Original Images/a. Training Set"
+  train_labels_csv: "../B. Disease Grading/2. Groundtruths/a. IDRiD_Disease Grading_Training Labels.csv"
+  test_images_dir: "../B. Disease Grading/1. Original Images/b. Testing Set"
+  test_labels_csv: "../B. Disease Grading/2. Groundtruths/b. IDRiD_Disease Grading_Testing Labels.csv"
+
+image_size: 1024
+
+model:
+  encoder_name: resnext50_32x4d
+  encoder_weights: imagenet
+  seg_classes: 3
+  cls_classes: 5
+  segmentation_head: Segformer
+
+training:
+  num_epochs: 100
+  batch_size: 4
+  num_workers: 16
+  save_freq: 10
+  segmentation_only_epochs: 0
+
+optimizer:
+  name: adam
+  lr: 0.0001
+  weight_decay: 0.00001
+
+scheduler:
+  name: plateau
+  patience: 7
+  factor: 0.5
+
+segmentation_loss:
+  name: focal_dice_tversky
+  focal_alpha: 1
+  focal_gamma: 2
+  tversky_alpha: 0.5
+  tversky_beta: 0.5
+  focal_weight: 0.33
+  dice_weight: 0.33
+  tversky_weight: 0.34
+
+classification_loss:
+  name: combined
+  ce_weight: 0.4
+  focal_weight: 0.4
+  smooth_weight: 0.2
+  gamma: 2.0
+  smoothing: 0.1
+
+preprocessing:
+  clahe: false
+  center_crop: false
+  advanced_fundus: true
+  fundus_scale: 500
+
+augmentation:
+  horizontal_flip: 0.5
+  vertical_flip: 0.5
+  random_rotate90: 0.5
+  rotation_limit: 30
+  rotation_prob: 0.5
+  
+  brightness_contrast: 0.5
+  brightness_limit: 0.3
+  contrast_limit: 0.3
+  hue_saturation: 0.4
+  hue_shift_limit: 25
+  sat_shift_limit: 40
+  val_shift_limit: 25
+  
+  gaussian_blur: 0.2
+  motion_blur: 0.2
+  gaussian_noise: 0.3
+  elastic_transform: 0.3
+  grid_distortion: 0.2
+  optical_distortion: 0.2
+
+logging:
+  use_wandb: true
+  project_name: final_retinopathy_multitask 

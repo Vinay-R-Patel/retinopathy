@@ -1,0 +1,39 @@
+[project]
+name = "grading"
+version = "0.1.0"
+description = "Diabetic Retinopathy Grading Classification"
+authors = [{name = "User", email = "user@example.com"}]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "segmentation-models-pytorch",
+    "timm",
+    "opencv-python",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "scikit-learn",
+    "tqdm",
+    "albumentations",
+    "wandb",
+    "Pillow",
+    "PyYAML"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest",
+    "black",
+    "isort",
+    "flake8"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."] 

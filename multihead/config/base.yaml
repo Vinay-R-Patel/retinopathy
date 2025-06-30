@@ -1,0 +1,83 @@
+experiment_name: multitask_baseline
+seed: 42
+output_base_dir: outputs
+
+segmentation_data:
+  train_images_dir: "../A. Segmentation/1. Original Images/a. Training Set"
+  train_hard_exudates_dir: "../A. Segmentation/2. All Segmentation Groundtruths/a. Training Set/3. Hard Exudates"
+  train_haemorrhages_dir: "../A. Segmentation/2. All Segmentation Groundtruths/a. Training Set/2. Haemorrhages"
+  test_images_dir: "../A. Segmentation/1. Original Images/b. Testing Set"
+  test_hard_exudates_dir: "../A. Segmentation/2. All Segmentation Groundtruths/b. Testing Set/3. Hard Exudates"
+  test_haemorrhages_dir: "../A. Segmentation/2. All Segmentation Groundtruths/b. Testing Set/2. Haemorrhages"
+
+classification_data:
+  train_images_dir: "../B. Disease Grading/1. Original Images/a. Training Set"
+  train_labels_csv: "../B. Disease Grading/2. Groundtruths/a. IDRiD_Disease Grading_Training Labels.csv"
+  test_images_dir: "../B. Disease Grading/1. Original Images/b. Testing Set"
+  test_labels_csv: "../B. Disease Grading/2. Groundtruths/b. IDRiD_Disease Grading_Testing Labels.csv"
+
+image_size: 512
+
+model:
+  encoder_name: resnet34
+  encoder_weights: imagenet
+  seg_classes: 3
+  cls_classes: 5
+  segmentation_head: Segformer
+
+training:
+  num_epochs: 50
+  batch_size: 4
+  num_workers: 4
+  save_freq: 10
+  segmentation_only_epochs: 5
+
+optimizer:
+  name: adam
+  lr: 0.0001
+  weight_decay: 0.00001
+
+scheduler:
+  name: plateau
+  patience: 5
+  factor: 0.5
+
+segmentation_loss:
+  name: combined
+  alpha: 0.5
+
+classification_loss:
+  name: focal
+  alpha: 0.25
+  gamma: 2.0
+
+preprocessing:
+  clahe: false
+  center_crop: false
+  advanced_fundus: false
+
+augmentation:
+  horizontal_flip: 0.5
+  vertical_flip: 0.3
+  random_rotate90: 0.3
+  rotation_limit: 15
+  rotation_prob: 0.3
+  
+  brightness_contrast: 0.3
+  brightness_limit: 0.2
+  contrast_limit: 0.2
+  hue_saturation: 0.2
+  hue_shift_limit: 15
+  sat_shift_limit: 20
+  val_shift_limit: 15
+  
+  gaussian_blur: 0.1
+  motion_blur: 0.1
+  gaussian_noise: 0.1
+  elastic_transform: 0.1
+  grid_distortion: 0.0
+  optical_distortion: 0.0
+
+logging:
+  use_wandb: true
+  project_name: multitask_retina_comprehensive 
